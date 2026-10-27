@@ -84,12 +84,8 @@ elif page == "Operational Analytics":
         default=sorted(orders.service_type.unique()),
     )
     filtered = orders[orders.region_code.isin(region) & orders.service_type.isin(service)].copy()
-    volume = (
-        filtered.groupby([filtered.created_at.dt.to_period("M").astype(str), "region_code"])
-        .size()
-        .rename("orders")
-        .reset_index(names=["month", "region_code"])
-    )
+    filtered["month"] = filtered.created_at.dt.to_period("M").astype(str)
+    volume = filtered.groupby(["month", "region_code"]).size().reset_index(name="orders")
     st.plotly_chart(
         px.bar(volume, x="month", y="orders", color="region_code", title="Service demand"),
         use_container_width=True,
