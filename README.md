@@ -1,7 +1,7 @@
-# FieldOps Intelligence
+# Field Service Performance Intelligence
 
 ## 1. Project title and executive summary
-**FieldOps Intelligence — AI-Powered Field Service Performance & Digital Transformation Platform** is a synthetic industrial field-service portfolio system connecting deterministic data generation, quality governance, dimensional modeling, shared KPIs, protected APIs, React, Streamlit, Power BI source, evidence-grounded AI, Lean workflows, simulation, and optional Fabric CI/CD. Local components are tested; external services and Windows validation are reported separately.
+**Field Service Performance Intelligence** is a synthetic field-service analytics portfolio that demonstrates deterministic data generation, KPI governance, data-quality validation, dimensional modeling, protected APIs, dashboarding, and AI-assisted decision support. The project connects source operations data with governed metrics, reporting workflows, and Lean improvement tracking in a fully fictional, demo-ready environment.
 
 ## 2. Business problem
 Service organizations face SLA breaches, repeat visits, constrained technicians, parts delays, travel cost, fragmented definitions, unreliable data, and slow corrective action. This project provides one governed path from source event to management action.

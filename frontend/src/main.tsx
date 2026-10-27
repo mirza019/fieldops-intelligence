@@ -86,8 +86,8 @@ function App() {
         <div className="brand-block">
           <div className="brand-mark">F</div>
           <div>
-            <h1>FieldOps Intelligence</h1>
-            <small>Field Service Performance &amp; Digital Transformation</small>
+            <h1>Field Service Performance Intelligence</h1>
+            <small>Synthetic field-service analytics portfolio</small>
           </div>
         </div>
 

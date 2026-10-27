@@ -18,7 +18,7 @@ from streamlit_app.services.ai import mock_answer
 from streamlit_app.services.data import available, load_kpis, load_table
 from streamlit_app.services.simulation import simulate
 
-st.set_page_config(page_title="FieldOps Intelligence", page_icon="⚙️", layout="wide")
+st.set_page_config(page_title="Field Service Performance Intelligence", page_icon="⚙️", layout="wide")
 
 st.markdown(
     """
@@ -229,8 +229,8 @@ st.sidebar.markdown(
     <div class="brand-box">
         <span class="brand-mark">F</span>
         <div>
-            <div class="brand-title">FieldOps Intelligence</div>
-            <span class="brand-subtitle">Field Service Performance &amp; Digital Transformation</span>
+            <div class="brand-title">Field Service Performance Intelligence</div>
+            <span class="brand-subtitle">Synthetic field-service analytics portfolio</span>
         </div>
     </div>
     """,
