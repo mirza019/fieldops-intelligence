@@ -18,7 +18,7 @@ Legend: `[x]` implemented and verified, `[~]` in progress, `[ ]` not started, `[
 - [~] Controlled defect injection with clean ground truth (implemented for orders)
 - [x] Complete synthetic visits, parts, time, costs, SLA, improvements, and actions
 - [~] Six-schema SQLAlchemy physical model (43 tables including visit-technician junction)
-- [~] Alembic baseline migration; live PostgreSQL execution pending
+- [x] Alembic baseline migration verified on PostgreSQL 16 (43 tables, 45 foreign keys)
 - [ ] PostgreSQL seed loader
 - [x] Generator reproducibility and defect-manifest tests
 
@@ -42,7 +42,7 @@ Legend: `[x]` implemented and verified, `[~]` in progress, `[ ]` not started, `[
 - [~] React command center connected to APIs; remaining workflows use Streamlit
 - [~] Grounded mock AI; Gemini/Ollama adapters pending
 - [~] DMAIC read-only workspace and calculated what-if simulation
-- [ ] PDF reports, alerts, scheduler, and notifications
+- [~] Verified management PDF/API complete; alerts, scheduler, and notifications pending
 - [ ] End-to-end verification, screenshots, deployment, and portfolio polish
 
 ## Added portfolio and deployment requirements

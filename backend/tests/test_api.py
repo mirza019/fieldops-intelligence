@@ -24,3 +24,10 @@ def test_authorization_is_server_side() -> None:
     )
     assert allowed.status_code == 200
     assert allowed.json()["evidence"]
+
+
+def test_management_report_download() -> None:
+    response = client.get("/api/reports/management.pdf")
+    assert response.status_code == 200
+    assert response.headers["content-type"] == "application/pdf"
+    assert response.content.startswith(b"%PDF-")

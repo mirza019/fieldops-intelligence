@@ -104,7 +104,7 @@ A deterministic directional capacity model combines technicians/scheduling with 
 FastAPI enforces administrator, manager, analyst and coordinator permissions server-side; tests prove denied analyst access. Header roles are development-only and must become OIDC/JWT in production.
 
 ## 26. API architecture and endpoints
-`GET /health`, `/api/kpis`, `/api/quality`, `/api/improvements`; `POST /api/ai/analyze`, `/api/simulations`. OpenAPI is served at `/docs`.
+`GET /health`, `/api/kpis`, `/api/quality`, `/api/improvements`, `/api/reports/management.pdf`; `POST /api/ai/analyze`, `/api/simulations`. OpenAPI is served at `/docs`.
 
 ## 27. Local installation on macOS
 ```bash
@@ -122,7 +122,7 @@ Run `docker compose up --build` for PostgreSQL 16 and the demo API.
 export DATABASE_URL='postgresql+psycopg://fieldops:fieldops@localhost:5432/fieldops'
 alembic -c backend/migrations/alembic.ini upgrade head
 ```
-Live execution is pending a running Docker/database environment.
+Verified against an isolated PostgreSQL 16 instance: revision `0001_enterprise_baseline`, 43 tables and 45 foreign keys.
 
 ## 30. Synthetic data generation commands
 Use `python -m data.generators.generate --profile medium --output data/synthetic` and `python -m scripts.build_demo_data --profile small --output data/demo`.
@@ -165,7 +165,7 @@ Generate snapshot → start Streamlit → review/filter KPIs → inspect quality
 `data/` generation; `analytics/` contracts; `backend/` API/models/migrations; `frontend/` React; `streamlit_app/` public client; `powerbi/` BI source; `scripts/` build/validate/deploy; `docs/` design/runbooks; `.github/` CI.
 
 ## 42. Known limitations
-- Live PostgreSQL migration, pipeline and row counts are pending.
+- PostgreSQL migration is verified; transactional ingestion/pipeline row loading remains pending.
 - Full PBIR visuals require Desktop authoring/validation.
 - Gemini/Ollama adapters, production OIDC, mutation workflows, scheduler, email and PDF export are incomplete.
 - GitHub push, Streamlit Cloud, Fabric, refresh and Windows checks require external access.

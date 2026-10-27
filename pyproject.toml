@@ -12,6 +12,7 @@ dependencies = [
   "pandas>=2.2,<3",
   "psycopg[binary]>=3.2,<4",
   "pydantic>=2.9,<3",
+  "reportlab>=4.2,<5",
   "sqlalchemy>=2.0,<3",
 ]
 
@@ -29,7 +30,7 @@ include = ["analytics*", "backend*", "data*", "scripts*", "streamlit_app*"]
 namespaces = true
 
 [tool.pytest.ini_options]
-testpaths = ["data/generators/tests", "backend/tests", "analytics/kpis/tests", "streamlit_app/tests", "powerbi/validation"]
+testpaths = ["data/generators/tests", "backend/tests", "analytics/kpis/tests", "analytics/reporting/tests", "streamlit_app/tests", "powerbi/validation"]
 pythonpath = ["."]
 
 [tool.ruff]

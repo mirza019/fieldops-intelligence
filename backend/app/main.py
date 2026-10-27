@@ -2,9 +2,10 @@ from __future__ import annotations
 
 from typing import Annotated
 
-from fastapi import Depends, FastAPI, Header, HTTPException
+from fastapi import Depends, FastAPI, Header, HTTPException, Response
 
 from analytics.kpis import KPI_CATALOG
+from analytics.reporting import build_management_report
 from streamlit_app.services.ai import mock_answer
 from streamlit_app.services.data import load_kpis, load_table
 from streamlit_app.services.simulation import simulate
@@ -89,3 +90,12 @@ def simulation(
 @app.get("/api/improvements")
 def improvements(_: Annotated[str, Depends(require("read"))]) -> list[dict]:
     return load_table("improvement_cases").to_dict(orient="records")
+
+
+@app.get("/api/reports/management.pdf")
+def management_report(_: Annotated[str, Depends(require("read"))]) -> Response:
+    return Response(
+        build_management_report(load_kpis()),
+        media_type="application/pdf",
+        headers={"Content-Disposition": "attachment; filename=fieldops-management-report.pdf"},
+    )
