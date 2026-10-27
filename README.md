@@ -16,7 +16,7 @@ Python, Pandas, SQLAlchemy, Alembic, PostgreSQL, dimensional modeling, KPI/data 
 Implemented locally: three data-volume profiles, 43-table metadata, calculated KPIs, quality results, eight-mode Streamlit app, Parquet snapshot, protected FastAPI analytics, React KPI command center, deterministic evidence-grounded AI, simulation, Power BI structural validation, and non-destructive Fabric publisher.
 
 ## 6. Application screenshots and demonstration
-No fabricated screenshots are included. Run the applications locally; add screenshots only after capturing the actual rendered Streamlit, React, and Windows Power BI report.
+The live public Streamlit application is available at [fieldops-intelligence-mirza019.streamlit.app](https://fieldops-intelligence-mirza019.streamlit.app/). It was deployed from `main` using `streamlit_app/app.py` and verified after cloud build. Power BI screenshots remain pending Windows Desktop validation.
 
 ## 7. High-level system architecture diagram
 ```mermaid
@@ -156,7 +156,7 @@ All data is synthetic; secrets are environment-only; `.env` is ignored; public m
 CI runs Python lint/tests, data generation, Power BI checks, compilation, frontend build and dependency audit. Fabric deployment is manual, environment-gated and secret-backed.
 
 ## 39. Deployment options
-Streamlit Cloud consumes checked-in Parquet; FastAPI/PostgreSQL use Docker; Fabric uses `fabric-cicd` 1.4-compatible scripts. Runbooks live in `docs/deployment/`.
+Streamlit Community Cloud is deployed and consumes the checked-in Parquet snapshot: [public FieldOps demo](https://fieldops-intelligence-mirza019.streamlit.app/). FastAPI/PostgreSQL use Docker or native PostgreSQL; Fabric uses `fabric-cicd` 1.4-compatible scripts. Runbooks live in `docs/deployment/`.
 
 ## 40. Complete end-to-end demo walkthrough
 Generate snapshot → start Streamlit → review/filter KPIs → inspect quality → ask AI → inspect evidence/DMAIC → run simulation → inspect pipeline → start API/React → validate Power BI → open PBIP on Windows when available.
@@ -168,7 +168,7 @@ Generate snapshot → start Streamlit → review/filter KPIs → inspect quality
 - PostgreSQL migration is verified; transactional ingestion/pipeline row loading remains pending.
 - Full PBIR visuals require Desktop authoring/validation.
 - Gemini/Ollama adapters, production OIDC, mutation workflows, scheduler, email and PDF export are incomplete.
-- GitHub push, Streamlit Cloud, Fabric, refresh and Windows checks require external access.
+- Fabric deployment, Power BI refresh and Windows Desktop checks still require external Microsoft tenant/Windows access.
 
 ## 43. Future enhancements
 Complete transactional ingestion, KPI SQL views, PBIR visuals, OIDC/mutations/audit, Gemini/Ollama, APScheduler, PDF reports, measured performance tests, screenshots and external deployments.

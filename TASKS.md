@@ -54,6 +54,6 @@ Legend: `[x]` implemented and verified, `[~]` in progress, `[ ]` not started, `[
 - [x] Optional `fabric-cicd` 1.4 access check and deployment scripts
 - [x] Streamlit Community Cloud and student Power BI setup documentation
 - [x] CI workflows for Python, data/KPI, Streamlit, Power BI, frontend, and security
-- [~] Local Git repository configuration
-- [!] GitHub authentication is invalid; repository creation/push blocked until re-authenticated
-- [!] External Streamlit, Power BI, and Fabric deployments require account access
+- [x] Git repository published at `mirza019/fieldops-intelligence`
+- [x] Streamlit Community Cloud deployed and verified
+- [!] Power BI Desktop and Fabric deployment require Microsoft account/Windows access
