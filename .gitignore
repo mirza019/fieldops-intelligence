@@ -11,6 +11,7 @@ data/synthetic/*.json
 data/demo/*.duckdb
 node_modules/
 dist/
+*.tsbuildinfo
 .DS_Store
 .streamlit/secrets.toml
 .powerbi/cache/
