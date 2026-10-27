@@ -136,7 +136,7 @@ function App() {
           <div className="topbar-actions">
             <div className="date-chip">Jan 2024 — Dec 2024</div>
             <div className="date-chip muted">Last 12 months</div>
-            <div className="company-badge">Siemens Energy (Example)</div>
+            <div className="company-badge">Demo Portfolio</div>
           </div>
         </header>
 

@@ -265,7 +265,7 @@ if page == "Executive Performance":
             <div class="header-right">
                 <div class="header-chip">Jan 2024 — Dec 2024</div>
                 <div class="header-chip">Last 12 months</div>
-                <div class="header-chip accent">Siemens Energy (Example)</div>
+                <div class="header-chip accent">Demo Portfolio</div>
             </div>
         </div>
         """,
