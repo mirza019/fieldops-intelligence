@@ -1,0 +1,74 @@
+[
+  {
+    "defect_type": "missing_technician",
+    "row_index": 778,
+    "record_id": "SO-000779",
+    "field": "technician_id"
+  },
+  {
+    "defect_type": "missing_technician",
+    "row_index": 439,
+    "record_id": "SO-000440",
+    "field": "technician_id"
+  },
+  {
+    "defect_type": "unknown_status",
+    "row_index": 742,
+    "record_id": "SO-000743",
+    "field": "status"
+  },
+  {
+    "defect_type": "unknown_status",
+    "row_index": 152,
+    "record_id": "SO-000153",
+    "field": "status"
+  },
+  {
+    "defect_type": "inconsistent_region",
+    "row_index": 484,
+    "record_id": "SO-000485",
+    "field": "region_code"
+  },
+  {
+    "defect_type": "inconsistent_region",
+    "row_index": 733,
+    "record_id": "SO-000734",
+    "field": "region_code"
+  },
+  {
+    "defect_type": "missing_customer",
+    "row_index": 31,
+    "record_id": "SO-000032",
+    "field": "customer_id"
+  },
+  {
+    "defect_type": "missing_customer",
+    "row_index": 21,
+    "record_id": "SO-000022",
+    "field": "customer_id"
+  },
+  {
+    "defect_type": "invalid_completion_date",
+    "row_index": 607,
+    "record_id": "SO-000608",
+    "field": "completed_at"
+  },
+  {
+    "defect_type": "invalid_completion_date",
+    "row_index": 901,
+    "record_id": "SO-000902",
+    "field": "completed_at"
+  },
+  {
+    "defect_type": "duplicate_record",
+    "row_index": 697,
+    "record_id": "SO-000698",
+    "field": "service_order_id"
+  },
+  {
+    "defect_type": "duplicate_record",
+    "row_index": 985,
+    "record_id": "SO-000986",
+    "field": "service_order_id"
+  }
+]

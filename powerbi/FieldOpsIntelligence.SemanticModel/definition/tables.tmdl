@@ -1,0 +1,44 @@
+table 'Service Orders'
+    column 'Order Code'
+        dataType: string
+        sourceColumn: order_code
+    column 'Region'
+        dataType: string
+        sourceColumn: region_code
+    column 'Status'
+        dataType: string
+        sourceColumn: status
+    column 'Completed At'
+        dataType: dateTime
+        formatString: General Date
+        sourceColumn: completed_at
+    column 'SLA Due At'
+        dataType: dateTime
+        formatString: General Date
+        sourceColumn: sla_due_at
+    measure 'Service Orders' = DISTINCTCOUNT('Service Orders'[Order Code])
+        formatString: #,0
+        displayFolder: Volume
+    measure 'SLA Compliance' = DIVIDE(CALCULATE([Service Orders], FILTER('Service Orders', 'Service Orders'[Status] = "completed" && 'Service Orders'[Completed At] <= 'Service Orders'[SLA Due At])), CALCULATE([Service Orders], 'Service Orders'[Status] = "completed"))
+        formatString: 0.0%
+        displayFolder: Performance
+    partition 'Service Orders' = m
+        mode: import
+        source = let Source = PostgreSQL.Database(Environment.GetEnvironmentVariable("FIELDOPS_PBI_HOST"), Environment.GetEnvironmentVariable("FIELDOPS_PBI_DATABASE")), Orders = Source{[Schema="mart",Item="fact_service_order"]}[Data] in Orders
+
+table Date
+    dataCategory: Time
+    column Date
+        dataType: dateTime
+        isKey
+        formatString: yyyy-MM-dd
+        sourceColumn: full_date
+    column Year
+        dataType: int64
+        sourceColumn: year
+    column Month
+        dataType: int64
+        sourceColumn: month
+    partition Date = m
+        mode: import
+        source = let Source = PostgreSQL.Database(Environment.GetEnvironmentVariable("FIELDOPS_PBI_HOST"), Environment.GetEnvironmentVariable("FIELDOPS_PBI_DATABASE")), Dates = Source{[Schema="mart",Item="dim_date"]}[Data] in Dates

@@ -1,0 +1,25 @@
+services:
+  postgres:
+    image: postgres:16-alpine
+    environment:
+      POSTGRES_DB: fieldops
+      POSTGRES_USER: fieldops
+      POSTGRES_PASSWORD: fieldops
+    ports: ["5432:5432"]
+    volumes: ["fieldops_pg:/var/lib/postgresql/data"]
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U fieldops"]
+      interval: 5s
+      timeout: 3s
+      retries: 10
+  api:
+    build:
+      context: .
+      dockerfile: Dockerfile.backend
+    environment:
+      DEMO_DATA_PATH: /app/data/demo
+    ports: ["8000:8000"]
+    depends_on:
+      postgres: {condition: service_healthy}
+volumes:
+  fieldops_pg:

@@ -16,7 +16,7 @@ Legend: `[x]` implemented and verified, `[~]` in progress, `[ ]` not started, `[
 
 - [~] Deterministic synthetic-data generator (core entities and orders implemented)
 - [~] Controlled defect injection with clean ground truth (implemented for orders)
-- [ ] Complete operational entities, visits, parts, time, costs, SLA, improvements
+- [x] Complete synthetic visits, parts, time, costs, SLA, improvements, and actions
 - [~] Six-schema SQLAlchemy physical model (43 tables including visit-technician junction)
 - [~] Alembic baseline migration; live PostgreSQL execution pending
 - [ ] PostgreSQL seed loader
@@ -25,35 +25,35 @@ Legend: `[x]` implemented and verified, `[~]` in progress, `[ ]` not started, `[
 ## Phase 3 — Data engineering
 
 - [ ] Ingestion, validation, quarantine, and incremental publish pipeline
-- [ ] KPI SQL views and reconciliation tests
+- [~] Shared KPI calculations/tests complete; PostgreSQL KPI views pending
 - [ ] Run state, checkpoints, retry, and transaction recovery
 
 ## Phase 4 — Power BI
 
-- [ ] PBIP/PBIR/TMDL project source
-- [ ] DAX measures and Power Query
+- [x] PBIP/PBIR/TMDL project source baseline
+- [~] Initial DAX and PostgreSQL Power Query; full measure catalog pending
 - [ ] Five required report pages and theme
-- [ ] Automated source validation
+- [x] Automated source validation
 - [!] Windows Power BI Desktop verification
 
 ## Phases 5–10
 
-- [ ] FastAPI APIs, authentication, authorization, and audit
-- [ ] React workflow application connected to APIs
-- [ ] Grounded AI analyst with mock, Gemini, and Ollama providers
-- [ ] DMAIC workflow and what-if simulation
+- [~] FastAPI read APIs and demo RBAC; production identity/mutations/audit pending
+- [~] React command center connected to APIs; remaining workflows use Streamlit
+- [~] Grounded mock AI; Gemini/Ollama adapters pending
+- [~] DMAIC read-only workspace and calculated what-if simulation
 - [ ] PDF reports, alerts, scheduler, and notifications
 - [ ] End-to-end verification, screenshots, deployment, and portfolio polish
 
 ## Added portfolio and deployment requirements
 
-- [ ] Shared analytical KPI/filter contract
-- [ ] Read-only Streamlit application with eight pages
-- [ ] Portable governed Parquet/DuckDB demonstration snapshot
-- [ ] Genuine PBIP/PBIR/TMDL source and structural validator
-- [ ] Optional `fabric-cicd` access check and deployment scripts
-- [ ] Streamlit Community Cloud and student Power BI setup documentation
-- [ ] CI workflows for Python, data/KPI, Streamlit, Power BI, frontend, and security
+- [x] Shared analytical KPI/filter contract
+- [x] Read-only Streamlit application with eight modes
+- [x] Portable governed Parquet demonstration snapshot
+- [x] PBIP/PBIR/TMDL source and structural validator
+- [x] Optional `fabric-cicd` 1.4 access check and deployment scripts
+- [x] Streamlit Community Cloud and student Power BI setup documentation
+- [x] CI workflows for Python, data/KPI, Streamlit, Power BI, frontend, and security
 - [~] Local Git repository configuration
 - [!] GitHub authentication is invalid; repository creation/push blocked until re-authenticated
 - [!] External Streamlit, Power BI, and Fabric deployments require account access

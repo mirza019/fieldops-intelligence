@@ -22,11 +22,19 @@ def test_references_and_ground_truth_are_valid() -> None:
 
 
 def test_defect_manifest_matches_corruption() -> None:
-    config = GeneratorConfig(customers=12, technicians=10, equipment=30, orders=500, defect_rate=.06)
+    config = GeneratorConfig(
+        customers=12, technicians=10, equipment=30, orders=500, defect_rate=0.06
+    )
     clean, raw, manifest = generate(config)
     types = {item["defect_type"] for item in manifest}
-    assert types == {"missing_technician", "unknown_status", "inconsistent_region", "missing_customer", "invalid_completion_date", "duplicate_record"}
+    assert types == {
+        "missing_technician",
+        "unknown_status",
+        "inconsistent_region",
+        "missing_customer",
+        "invalid_completion_date",
+        "duplicate_record",
+    }
     assert len(raw) > len(clean["service_orders"])
     assert raw.technician_id.isna().any()
     assert "UNKNOWN" in set(raw.status)
-

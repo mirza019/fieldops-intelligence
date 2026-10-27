@@ -1,0 +1,5 @@
+relationship OrderCompletedDate
+    fromColumn: 'Service Orders'.'Completed At'
+    toColumn: Date.Date
+    isActive: false
+    crossFilteringBehavior: oneDirection

@@ -1,0 +1,6 @@
+model Model
+culture: en-US
+defaultPowerBIDataSourceVersion: powerBI_V3
+discourageImplicitMeasures
+
+annotation PBI_QueryOrder = ["Service Orders","Date"]

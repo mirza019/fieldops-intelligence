@@ -8,6 +8,7 @@ __pycache__/
 data/synthetic/*.csv
 data/synthetic/*.json
 !data/synthetic/.gitkeep
+data/demo/*.duckdb
 node_modules/
 dist/
 .DS_Store
