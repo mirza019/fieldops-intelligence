@@ -24,11 +24,11 @@ st.markdown(
     """
     <style>
     .stApp {
-        background: linear-gradient(180deg, #edf4fa 0%, #f5f8fb 100%);
+        background: linear-gradient(180deg, #f9f1f4 0%, #eef1ff 100%);
     }
     [data-testid="stSidebar"] {
-        background: linear-gradient(180deg, #0b1d31 0%, #132a42 100%);
-        color: #edf6ff;
+        background: linear-gradient(180deg, #3c1d2d 0%, #522239 100%);
+        color: #fef6fa;
     }
     [data-testid="stSidebar"] .block-container {
         padding-top: 1rem;
@@ -65,19 +65,19 @@ st.markdown(
         width: 2.2rem;
         height: 2.2rem;
         border-radius: 0.75rem;
-        background: linear-gradient(135deg, #3cbcff 0%, #6ae7d9 100%);
-        box-shadow: 0 12px 24px rgba(58, 124, 255, 0.35);
+        background: linear-gradient(135deg, #d7c0ff 0%, #f6d4e6 100%);
+        box-shadow: 0 12px 24px rgba(92, 63, 88, 0.28);
         display: inline-flex;
         align-items: center;
         justify-content: center;
-        color: #fff;
+        color: #4d1d32;
         font-weight: 800;
         font-size: 1rem;
     }
     .brand-title {
         font-size: 1.1rem;
         font-weight: 700;
-        color: #f4f9ff;
+        color: #fef6fa;
         letter-spacing: -0.02em;
     }
     .brand-subtitle {
@@ -98,7 +98,7 @@ st.markdown(
         font-size: 2rem;
         font-weight: 800;
         letter-spacing: -0.04em;
-        color: #102c4d;
+        color: #3d1d2d;
     }
     .header-right {
         display: flex;
@@ -107,25 +107,25 @@ st.markdown(
         flex-wrap: wrap;
     }
     .header-chip {
-        background: rgba(255,255,255,0.75);
-        border: 1px solid #dfeaf1;
+        background: rgba(255,255,255,0.7);
+        border: 1px solid #e8dfe9;
         border-radius: 0.75rem;
         padding: 0.6rem 0.8rem;
-        color: #1f3657;
+        color: #4a2a3a;
         font-size: 0.82rem;
         font-weight: 600;
     }
     .header-chip.accent {
-        background: linear-gradient(135deg, #193b6d 0%, #224d7c 100%);
+        background: linear-gradient(135deg, #5d2e46 0%, #6d4c71 100%);
         border-color: transparent;
         color: #ffffff;
     }
     .metric-card {
         background: rgba(255,255,255,0.75);
-        border: 1px solid #dfeaf1;
+        border: 1px solid #eadfe6;
         border-radius: 1rem;
         padding: 1rem 1rem 0.85rem;
-        box-shadow: 0 12px 16px rgba(14, 32, 51, 0.04);
+        box-shadow: 0 12px 16px rgba(60, 29, 45, 0.05);
         min-height: 137px;
     }
     .metric-card .icon {
