@@ -1,181 +1,269 @@
-# Field Service Performance Intelligence
+# FieldOps Intelligence
 
-## 1. Project title and executive summary
-**Field Service Performance Intelligence** is a synthetic field-service analytics portfolio that demonstrates deterministic data generation, KPI governance, data-quality validation, dimensional modeling, protected APIs, dashboarding, and AI-assisted decision support. The project connects source operations data with governed metrics, reporting workflows, and Lean improvement tracking in a fully fictional, demo-ready environment.
+Field Service Analytics and Performance Monitoring
 
-## 2. Business problem
-Service organizations face SLA breaches, repeat visits, constrained technicians, parts delays, travel cost, fragmented definitions, unreliable data, and slow corrective action. This project provides one governed path from source event to management action.
+FieldOps Intelligence is a personal project built to explore synthetic field-service data in a realistic, end-to-end way. It combines service orders, technician activity, equipment history, parts demand, and cost data into a single reporting model that can be filtered, analyzed, and explained. The goal is to turn operational information that usually sits across separate systems into a useful dashboard and a small analytics workflow.
 
-## 3. Project objectives
-Generate reproducible data; govern quality and metrics; publish trustworthy analytics; keep AI grounded; require human approval for operational change; remain runnable on Apple Silicon without an AI key.
+The project is intentionally fictional and read-only. It does not use a live operational database or real customer data. Instead, it generates demo data, calculates governed KPIs, validates quality checks, and exposes the results through dashboards, an API, and a Power BI source model.
 
-## 4. Job-relevant technical competencies
-Python, Pandas, SQLAlchemy, Alembic, PostgreSQL, dimensional modeling, KPI/data governance, FastAPI/RBAC, React/TypeScript, Streamlit/Plotly, Parquet, PBIP/PBIR/TMDL/DAX/M, Fabric CI/CD, Docker, and GitHub Actions.
+## Why I built it
 
-## 5. Key features
-Implemented locally: three data-volume profiles, 43-table metadata, calculated KPIs, quality results, eight-mode Streamlit app, Parquet snapshot, protected FastAPI analytics, React KPI command center, deterministic evidence-grounded AI, simulation, Power BI structural validation, and non-destructive Fabric publisher.
+I wanted to build something that feels like a real service operations analytics project, but without depending on confidential data. In field-service teams, the hard part is usually not the chart itself — it is bringing together work orders, technician time, parts delays, SLA commitments, and cost information in a way that can be trusted.
 
-## 6. Application screenshots and demonstration
-The live public Streamlit application is available at [fieldops-intelligence-mirza019.streamlit.app](https://fieldops-intelligence-mirza019.streamlit.app/). It was deployed from `main` using `streamlit_app/app.py` and verified after cloud build. Power BI screenshots remain pending Windows Desktop validation.
+This project tries to make that process visible. It pulls the core operational signals into one place, keeps the calculations transparent, and makes it easier to explore what is driving performance. The result is a demo platform for service analysis, KPI review, and operational decision support.
+
+## What it does
+
+The project currently includes the main components that are useful for understanding field-service performance:
+
+- Performance dashboards for service volume, backlog, SLA, utilization, and cost
+- Synthetic data generation with controlled defects and reproducible output
+- KPI calculation and quality validation on the generated dataset
+- FastAPI endpoints for read-only analytics and AI analysis
+- A Streamlit app for operational exploration and scenario testing
+- A Power BI project source for report modeling and semantic structure
+- An AI Analyst that answers questions using only KPI evidence and a safe fallback mode
+- Improvement tracking for DMAIC-style cases and actions
+
+Working features are the dashboarding, KPI framework, data generation, API layer, and Power BI source structure. Some items are still incomplete or require external validation, such as final Power BI visual authoring in Windows Desktop and any production-grade authentication or mutation workflow.
+
+## Live demo and screenshots
+
+The public demo is available here:
+
+https://fieldops-intelligence-mirza019.streamlit.app/
+
+The app is read-only and uses the synthetic demo snapshot. The screenshots below come from the project’s current dashboard assets and show the main executive view and the AI Analyst view.
 
 ![Executive overview dashboard](docs/screenshots/executive-overview.png)
 
+Caption: Executive overview with KPI cards, service demand, and operating context.
+
 ![AI Analyst decision support](docs/screenshots/ai-analyst.png)
 
-## 7. High-level system architecture diagram
+Caption: AI Analyst output grounded in the KPI snapshot and evidence-based recommendations.
+
+## How the system works
+
+The application follows a simple pattern: generate data, validate it, calculate governed KPIs, and present them through reporting interfaces.
+
 ```mermaid
 flowchart LR
- G[Generator]-->S[Staging/Quality]-->M[(PostgreSQL Mart)]-->K[Shared KPI Contract]
- K-->P[Power BI];K-->API[FastAPI]-->R[React];K-->D[Parquet]-->ST[Streamlit];K-->AI[Grounded AI]-->W[Human-approved action]
+    G[Synthetic generator] --> S[Source and staging data]
+    S --> V[Validation and quality checks]
+    V --> O[Operational tables]
+    O --> M[Analytical model and KPI contract]
+    M --> D[Streamlit dashboards]
+    M --> A[FastAPI analytics API]
+    M --> P[Power BI semantic model]
+    M --> I[AI Analyst]
+    I --> E[Evidence-backed recommendation]
+    E --> H[Human review]
 ```
 
-## 8. Technology stack
-Python 3.12, Pandas/NumPy/Faker, SQLAlchemy/Alembic/PostgreSQL, FastAPI/Pydantic, React/TypeScript/Vite/TanStack Query, Streamlit/Plotly/Parquet, Power BI project formats, `fabric-cicd`, Docker Compose, Pytest/Ruff and GitHub Actions.
+The synthetic data is produced in a reproducible way and stored in a portable Parquet snapshot. The dashboard and API read from the governed data and KPI contract instead of generating ad hoc UI values. This keeps the reporting layer consistent across dashboards and downstream tools.
 
-## 9. Database architecture and schema overview
-The authoritative model is `backend/app/models/database.py`; the migration is `backend/migrations/versions/0001_enterprise_baseline.py`. UUID operational/control keys, integer analytical keys, `NUMERIC(18,2)` money, currency codes, timezone-aware timestamps, checks, uniques, and indexes are implemented.
+## Data model
 
-## 10. Complete table inventory with table counts by schema
-Metadata-verified total: **43 tables**—`ops` 11, `staging` 4, `mart` 15, `governance` 5, `workflow` 4, `platform` 4. The required 42 are extended by normalized `ops.visit_technicians`. Live PostgreSQL row counts await migration execution. Full inventory: `docs/data-model/physical-model.md`.
+There are two main model layers in the project.
 
-## 11. Operational entity relationship diagram
+1. Operational model
+2. Reporting model
+
+The operational database is defined in `backend/app/models/database.py` and the Alembic migration under `backend/migrations/versions/0001_enterprise_baseline.py`. The design keeps source-aligned operational tables separate from the analytics layer and uses a six-schema structure: `ops`, `staging`, `mart`, `governance`, `workflow`, and `platform`.
+
 ```mermaid
 erDiagram
- CUSTOMERS||--o{SITES:owns
- SITES||--o{EQUIPMENT:contains
- EQUIPMENT||--o{SERVICE_ORDERS:receives
- SERVICE_ORDERS||--o{SERVICE_VISITS:comprises
- SERVICE_VISITS||--o{VISIT_TECHNICIANS:assigns
- TECHNICIANS||--o{VISIT_TECHNICIANS:works
- SERVICE_VISITS||--o{TIME_ENTRIES:records
- SERVICE_ORDERS||--o{PARTS_REQUESTS:requires
- SERVICE_ORDERS||--o{COST_TRANSACTIONS:incurs
+    CUSTOMERS ||--o{ SITES : owns
+    SITES ||--o{ EQUIPMENT : contains
+    EQUIPMENT ||--o{ SERVICE_ORDERS : receives
+    SERVICE_ORDERS ||--o{ SERVICE_VISITS : comprises
+    SERVICE_VISITS ||--o{ VISIT_TECHNICIANS : assigns
+    TECHNICIANS ||--o{ VISIT_TECHNICIANS : participates
+    SERVICE_VISITS ||--o{ TIME_ENTRIES : records
+    SERVICE_ORDERS ||--o{ PARTS_REQUESTS : requires
+    SERVICE_ORDERS ||--o{ COST_TRANSACTIONS : incurs
 ```
 
-## 12. Dimensional star schema diagram
+The reporting model is dim-enriched and fact-based. It separates dimensions such as customer, region, equipment, technician, date, status, and service type from fact tables such as service orders, visits, technician time, and service costs.
+
 ```mermaid
 flowchart TB
- D[DimDate]-->O[FactServiceOrder];C[DimCustomer]-->O;R[DimRegion]-->O;E[DimEquipment]-->O;T[DimServiceType]-->O;S[DimStatus]-->O;SL[DimSLA]-->O
- O-->V[FactServiceVisit];V-->TT[FactTechnicianTime];O-->CO[FactServiceCost];O-->PF[FactPartsFulfillment];O-->SE[FactSLAEvent];D-->DQ[FactDataQuality]
+    D[DimDate] --> O[FactServiceOrder]
+    C[DimCustomer] --> O
+    R[DimRegion] --> O
+    E[DimEquipment] --> O
+    T[DimServiceType] --> O
+    S[DimStatus] --> O
+    SL[DimSLA] --> O
+    O --> V[FactServiceVisit]
+    V --> TT[FactTechnicianTime]
+    O --> CO[FactServiceCost]
+    O --> PF[FactPartsFulfillment]
+    O --> SE[FactSLAEvent]
+    D --> DQ[FactDataQuality]
 ```
 
-## 13. Power BI semantic model overview
-`powerbi/FieldOpsIntelligence.pbip` links PBIR and TMDL sources with explicit measures, Power Query, date source, one-direction relationship metadata, and five page identifiers. Structural checks pass; Desktop validation is pending.
+In plain English, the operational tables store current source-state records, while the analytical tables aggregate them for reporting. That distinction matters because it avoids mixing transaction-level detail with decision-ready KPI results.
 
-## 14. Data modeling design decisions
-Facts declare grain; aggregations avoid fact-to-fact joins; conformed dimensions filter facts; SCD2 preserves meaningful history; date roles are explicit; bidirectional filtering is avoided; staging/operational tables stay outside the report model.
+## Data pipeline
 
-## 15. Data generation and synthetic business scenarios
-Small/medium/large profiles create 1k/25k/50k orders plus derived visits, time, parts, costs, SLA, cases and actions. Repairs increase repeats, remote regions raise travel cost, and selected parts raise lead time. A manifest identifies controlled raw defects.
+The project uses a simple pipeline from synthetic generation to validated analytics output. The data generation code lives in `data/generators/generate.py`, and the demo build process is driven by `scripts/build_demo_data.py`.
 
-## 16. Data engineering pipeline workflow
 ```mermaid
 flowchart LR
- A[Generate]-->B[Register]-->C[Raw+Hash]-->D[Validate]
- D--invalid-->Q[Quarantine];D--accepted-->V[Validated]-->M[Dimensions/Facts]-->K[Reconcile]-->P[Atomic Publish]-->X[Alert/Audit]
+    A[Generate synthetic source data] --> B[Register and hash raw records]
+    B --> C[Validate schema and rules]
+    C --> D{Valid?}
+    D -- No --> Q[Quarantine and incident tracking]
+    D -- Yes --> V[Validated records]
+    V --> M[Fact and dimension models]
+    M --> K[Governed KPI snapshot]
+    K --> R[Streamlit, API, Power BI, AI]
 ```
-The portable snapshot is functional. Full transactional PostgreSQL orchestration remains unverified.
 
-## 17. Source-to-target transformation mapping
-`docs/data-model/source-to-target-mapping.md` documents source/target fields, conversions, business rules, nulls, validation and historical behavior, including completion, SLA, utilization and cost examples.
+What already works:
 
-## 18. Data quality governance framework
-Executable checks cover completeness, uniqueness, validity, consistency, references and freshness. Rule-level applicable/passed/failed counts produce a documented score. PostgreSQL quarantine and result tables are defined.
+- deterministic synthetic generation with controlled defects
+- data validation and rule-based output
+- KPI generation and snapshot creation
+- read-only dashboard consumption from the snapshot
 
-## 19. KPI catalog and metric definitions
-The 18 governed definitions are in `docs/kpi-catalog/kpis.md`. Six headline KPIs are executable through the shared contract. Zero denominators return null and KPI values are reused by Streamlit, API, React and AI evidence.
+What is still planned or external:
 
-## 20. Power BI dashboard pages and features
-PBIR metadata defines Executive, Operations, Cost, Lean and Data Quality pages. Visual authoring/rendering, interactions and accessibility require Windows Desktop validation and are not claimed complete.
+- broader transactional ingestion orchestration
+- live PostgreSQL publish pipeline beyond the portable demo workflow
+- full Power BI Desktop visual validation on Windows
 
-## 21. AI Performance Analyst architecture
+## AI Analyst
+
+The AI Analyst is built to answer simple operational questions using only KPI evidence. It does not run arbitrary SQL or inspect the database directly. Instead, it receives a small allowlisted KPI payload, explains the likely issue, and suggests a next step.
+
+The service is implemented in `streamlit_app/services/ai.py` and the fast API uses it in `backend/app/main.py`.
+
 ```mermaid
 flowchart LR
- Q[Authorized question]-->I[Intent]-->T[Allowlisted tool]-->E[Verified evidence]-->L[Mock/Gemini/Ollama]-->O[Observation/Hypothesis/Recommendation]
+    Q[User question] --> K[KPI evidence]
+    K --> A[AI Analyst]
+    A --> O[Observation]
+    A --> H[Hypothesis]
+    A --> R[Recommendation]
+    Q --> F[Deterministic fallback]
+    K --> F
 ```
-Deterministic mock mode remains the safe default, and Gemini is supported as an optional live provider when `GEMINI_API_KEY` is set in the environment or local `.env`. The app never sends unrestricted database queries or unverified data to the model; it only passes allowlisted KPI evidence and requires JSON-structured output.
 
-## 22. Process digitization and automation
-Models cover pipeline runs, alerts, audits, approvals, cases and actions. Public Streamlit is deliberately read-only. Operational mutations belong behind API roles and audit events.
+The safe default is a deterministic mock response. If a valid `GEMINI_API_KEY` is present, the app can optionally use Gemini for a live answer path. In both cases, the model is only given KPI values and not unrestricted access to the underlying data.
 
-## 23. Lean continuous improvement workflow
-Generated DMAIC cases/actions are displayed read-only. Lifecycle: Define → Measure → Analyze → manager-approved Improve → Control → Complete. KPI movement is not treated as causal proof.
+## Technologies used
 
-## 24. What-if simulation methodology
-A deterministic directional capacity model combines technicians/scheduling with demand, parts, travel and cost assumptions to estimate SLA, backlog, utilization, resolution time and cost. Outputs are explicitly estimates and are unit-tested.
+| Technology | Purpose |
+| --- | --- |
+| Python 3.12 | Data generation, analytics, scripts, and API services |
+| Pandas / NumPy | Data processing and synthetic generation |
+| SQLAlchemy / Alembic | Model definition and migration baseline |
+| PostgreSQL | Operational and analytical model structure |
+| FastAPI | Read-only analytics API and endpoint protection |
+| Streamlit | Dashboard and page-based operational exploration |
+| Plotly | Interactive charts in the dashboard |
+| React / TypeScript | Frontend command-center style interface |
+| Power BI PBIP / TMDL | Reporting source, semantic model, and structural validation |
+| Parquet | Portable data snapshot |
+| Pytest | Validation and regression coverage |
 
-## 25. Role-based access control
-FastAPI enforces administrator, manager, analyst and coordinator permissions server-side; tests prove denied analyst access. Header roles are development-only and must become OIDC/JWT in production.
+## Project structure
 
-## 26. API architecture and endpoints
-`GET /health`, `/api/kpis`, `/api/quality`, `/api/improvements`, `/api/reports/management.pdf`; `POST /api/ai/analyze`, `/api/simulations`. OpenAPI is served at `/docs`.
+```text
+.
+├── analytics/                 # KPI definitions and analytical contracts
+├── backend/                  # FastAPI app, models, and migration files
+├── data/                     # Synthetic data generation sources
+├── docs/                     # Architecture and data-model documentation
+├── frontend/                 # React frontend work-in-progress
+├── powerbi/                  # Power BI PBIP / report source files
+├── scripts/                  # Demo-data build and validation utilities
+├── streamlit_app/            # Streamlit dashboard and service layer
+├── README.md                 # Project overview and setup notes
+├── AGENTS.md                 # Engineering guidance and repo conventions
+├── TASKS.md                  # Delivery checklist and implementation status
+├── pyproject.toml            # Python package and dependency configuration
+├── docker-compose.yml        # Local container setup
+├── .env.example              # Sample environment configuration
+└── .gitignore
+```
 
-## 27. Local installation on macOS
+## Getting started
+
+This project is intended to run locally on macOS or Linux with Python 3.12.
+
 ```bash
-/opt/homebrew/bin/python3.12 -m venv .venv
+python3.12 -m venv .venv
 source .venv/bin/activate
 pip install -e '.[dev,streamlit]'
 python -m scripts.build_demo_data --profile small
+streamlit run streamlit_app/app.py
 ```
 
-## 28. Docker Compose startup
-Run `docker compose up --build` for PostgreSQL 16 and the demo API.
+Start the backend separately:
 
-## 29. Database initialization and migrations
-```bash
-export DATABASE_URL='postgresql+psycopg://fieldops:fieldops@localhost:5432/fieldops'
-alembic -c backend/migrations/alembic.ini upgrade head
-```
-Verified against an isolated PostgreSQL 16 instance: revision `0001_enterprise_baseline`, 43 tables and 45 foreign keys.
-
-## 30. Synthetic data generation commands
-Use `python -m data.generators.generate --profile medium --output data/synthetic` and `python -m scripts.build_demo_data --profile small --output data/demo`.
-
-## 31. Pipeline execution commands
-Portable publication: `python -m scripts.build_demo_data --profile small`. Database-backed checkpoint orchestration remains a known gap.
-
-## 32. Backend and frontend startup
 ```bash
 uvicorn backend.app.main:app --reload
-streamlit run streamlit_app/app.py
-cd frontend && npm install && npm run dev
 ```
 
-## 33. Power BI PBIP/PBIR/TMDL setup
-Configure `FIELDOPS_PBI_HOST`/`FIELDOPS_PBI_DATABASE`, run `python -m scripts.validate_powerbi`, then open the PBIP in compatible Windows Power BI Desktop.
+For the frontend:
 
-## 34. Power BI Desktop validation on Windows
-Verify source parsing, credentials, refresh, relationships, DAX reconciliation, five pages, interactions, navigation and formats. Status: **requires external validation**.
+```bash
+cd frontend
+npm install
+npm run dev
+```
 
-## 35. Testing and verification
-Commands: `ruff check .`, `pytest -q`, `python -m scripts.validate_powerbi`, `python -m compileall backend analytics streamlit_app scripts`, `npm run build`. Latest: 12 Python tests, lint, Power BI structure, React build and Streamlit startup passed; production npm audit found zero vulnerabilities.
+For a local database-backed workflow, use Docker Compose if you want the Postgres-based environment available:
 
-## 36. Performance and scalability
-Vectorized generation supports 1k/25k/50k profiles. No database size, timing or query benchmark is claimed until reproducibly measured. Indexes cover major foreign keys and filters.
+```bash
+docker compose up --build
+```
 
-## 37. Security and data privacy
-All data is synthetic; secrets are environment-only; `.env` is ignored; public mode is read-only; Fabric scripts print no tokens and delete no unrelated items. Demo auth is not production authentication.
+Useful validation commands:
 
-## 38. GitHub Actions and CI/CD
-CI runs Python lint/tests, data generation, Power BI checks, compilation, frontend build and dependency audit. Fabric deployment is manual, environment-gated and secret-backed.
+```bash
+pytest -q
+python -m scripts.validate_powerbi
+ruff check .
+```
 
-## 39. Deployment options
-Streamlit Community Cloud is deployed and consumes the checked-in Parquet snapshot: [public FieldOps demo](https://fieldops-intelligence-mirza019.streamlit.app/). FastAPI/PostgreSQL use Docker or native PostgreSQL; Fabric uses `fabric-cicd` 1.4-compatible scripts. Runbooks live in `docs/deployment/`.
+## Current status
 
-## 40. Complete end-to-end demo walkthrough
-Generate snapshot → start Streamlit → review/filter KPIs → inspect quality → ask AI → inspect evidence/DMAIC → run simulation → inspect pipeline → start API/React → validate Power BI → open PBIP on Windows when available.
+The project is in a workable demo state. The current implementation includes:
 
-## 41. Project structure
-`data/` generation; `analytics/` contracts; `backend/` API/models/migrations; `frontend/` React; `streamlit_app/` public client; `powerbi/` BI source; `scripts/` build/validate/deploy; `docs/` design/runbooks; `.github/` CI.
+- synthetic data generation
+- governed KPI calculation
+- Streamlit analytics app
+- FastAPI read endpoints
+- AI Analyst with deterministic fallback and optional Gemini adapter
+- report source metadata and Power BI validation script
+- documentation and usage examples
 
-## 42. Known limitations
-- PostgreSQL migration is verified; transactional ingestion/pipeline row loading remains pending.
-- Full PBIR visuals require Desktop authoring/validation.
-- Ollama adapter, production OIDC, mutation workflows, scheduler, email and PDF export are incomplete. Gemini is available via the keyed provider path and safe mock fallback.
-- Fabric deployment, Power BI refresh and Windows Desktop checks still require external Microsoft tenant/Windows access.
+The main external validation items still require Windows Power BI Desktop access and any live Microsoft/Fabric environment.
 
-## 43. Future enhancements
-Complete transactional ingestion, KPI SQL views, PBIR visuals, OIDC/mutations/audit, Gemini/Ollama, APScheduler, PDF reports, measured performance tests, screenshots and external deployments.
+## What still needs to be done
 
-## 44. License and disclaimer
-Educational portfolio project using fictional data. No Siemens Energy branding, confidential information, proprietary schema or internal process is included. Power BI/Fabric features and licensing depend on the account and tenant.
+The most important remaining work is straightforward:
+
+- finish the full reporting authoring work in Power BI Desktop
+- validate the analytics layer against a live PostgreSQL environment
+- expand the production-grade auth and audit model behind the read-only demo layer
+- continue narrowing the gap between the demo model and a fully orchestrated pipeline
+
+## License and data
+
+This project uses fictional synthetic data only. It does not contain real customer records, private operational systems, or proprietary production information.
+
+There is no license file in the repository at the moment, so the repo should be treated as a sample project without an explicit open-source license declaration.
+
+Further references:
+
+- `docs/architecture/system-architecture.md`
+- `docs/data-model/physical-model.md`
+- `docs/diagrams/workflows.md`
+- `docs/architecture/data-model.md`
+- `powerbi/FieldOpsIntelligence.pbip`
