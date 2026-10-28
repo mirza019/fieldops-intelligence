@@ -224,6 +224,44 @@ PAGES = [
     "Pipeline Monitoring",
 ]
 
+
+def _apply_scenario_to_kpis(base_kpis: dict[str, float | None]) -> dict[str, float | None]:
+    scenario = st.session_state.get(
+        "scenario",
+        {
+            "technicians_pct": 10,
+            "demand_pct": 0,
+            "parts_pct": -10,
+            "scheduling_pct": 10,
+            "travel_pct": 0,
+            "cost_pct": 0,
+        },
+    )
+    baseline = {
+        "sla": base_kpis.get("KPI-001", 0.0),
+        "backlog": base_kpis.get("KPI-005", 0.0),
+        "utilization": base_kpis.get("KPI-003", 0.0),
+        "resolution": base_kpis.get("KPI-004", 0.0),
+        "cost": base_kpis.get("KPI-008", 0.0),
+    }
+    adjusted = simulate(
+        baseline,
+        float(scenario.get("technicians_pct", 0)),
+        float(scenario.get("demand_pct", 0)),
+        float(scenario.get("parts_pct", 0)),
+        float(scenario.get("scheduling_pct", 0)),
+        float(scenario.get("travel_pct", 0)),
+        float(scenario.get("cost_pct", 0)),
+    )
+    updated = dict(base_kpis)
+    updated["KPI-001"] = adjusted["SLA compliance"]
+    updated["KPI-003"] = adjusted["Utilization"]
+    updated["KPI-004"] = adjusted["Resolution hours"]
+    updated["KPI-005"] = adjusted["Backlog"]
+    updated["KPI-008"] = adjusted["Cost per order"]
+    return updated
+
+
 st.sidebar.markdown(
     """
     <div class="brand-box">
@@ -245,7 +283,48 @@ if not available():
 orders = load_table("service_orders")
 visits = load_table("service_visits")
 costs = load_table("cost_transactions")
-kpis = load_kpis()
+base_kpis = load_kpis()
+
+st.sidebar.subheader("Global filters")
+region_options = sorted(orders["region_code"].dropna().unique())
+service_options = sorted(orders["service_type"].dropna().unique())
+if "selected_regions" not in st.session_state:
+    st.session_state.selected_regions = region_options
+if "selected_services" not in st.session_state:
+    st.session_state.selected_services = service_options
+selected_regions = st.sidebar.multiselect(
+    "Region",
+    region_options,
+    default=st.session_state.selected_regions,
+    key="selected_regions",
+)
+selected_services = st.sidebar.multiselect(
+    "Service type",
+    service_options,
+    default=st.session_state.selected_services,
+    key="selected_services",
+)
+
+if "scenario" not in st.session_state:
+    st.session_state.scenario = {
+        "technicians_pct": 10,
+        "demand_pct": 0,
+        "parts_pct": -10,
+        "scheduling_pct": 10,
+        "travel_pct": 0,
+        "cost_pct": 0,
+    }
+
+filtered_orders = orders[
+    orders["region_code"].isin(selected_regions) & orders["service_type"].isin(selected_services)
+].copy()
+filtered_visits = visits[visits["service_order_id"].isin(filtered_orders["service_order_id"])]
+filtered_costs = costs[costs["service_order_id"].isin(filtered_orders["service_order_id"])]
+active_kpis = _apply_scenario_to_kpis(base_kpis)
+orders = filtered_orders
+visits = filtered_visits
+costs = filtered_costs
+kpis = active_kpis
 
 if page == "Executive Performance":
     metric_codes = ["KPI-001", "KPI-002", "KPI-003", "KPI-005", "KPI-004", "KPI-008"]
@@ -544,23 +623,32 @@ elif page == "Lean Continuous Improvement":
 
 elif page == "What-If Simulation":
     c1, c2, c3 = st.columns(3)
-    technicians = c1.slider("Technician capacity %", -20, 30, 10)
-    demand = c2.slider("Service demand %", -20, 30, 0)
-    parts = c3.slider("Parts lead-time %", -40, 40, -10)
-    scheduling = c1.slider("Scheduling efficiency %", -20, 30, 10)
-    travel = c2.slider("Travel time %", -30, 30, 0)
-    cost = c3.slider("Cost assumption %", -20, 30, 0)
-    baseline = {
-        "sla": kpis["KPI-001"],
-        "backlog": kpis["KPI-005"],
-        "utilization": kpis["KPI-003"],
-        "resolution": kpis["KPI-004"],
-        "cost": kpis["KPI-008"],
+    scenario = st.session_state.scenario
+    technicians = c1.slider("Technician capacity %", -20, 30, scenario.get("technicians_pct", 10))
+    demand = c2.slider("Service demand %", -20, 30, scenario.get("demand_pct", 0))
+    parts = c3.slider("Parts lead-time %", -40, 40, scenario.get("parts_pct", -10))
+    scheduling = c1.slider("Scheduling efficiency %", -20, 30, scenario.get("scheduling_pct", 10))
+    travel = c2.slider("Travel time %", -30, 30, scenario.get("travel_pct", 0))
+    cost = c3.slider("Cost assumption %", -20, 30, scenario.get("cost_pct", 0))
+    st.session_state.scenario = {
+        "technicians_pct": technicians,
+        "demand_pct": demand,
+        "parts_pct": parts,
+        "scheduling_pct": scheduling,
+        "travel_pct": travel,
+        "cost_pct": cost,
     }
-    scenario = simulate(baseline, technicians, demand, parts, scheduling, travel, cost)
+    baseline = {
+        "sla": base_kpis["KPI-001"],
+        "backlog": base_kpis["KPI-005"],
+        "utilization": base_kpis["KPI-003"],
+        "resolution": base_kpis["KPI-004"],
+        "cost": base_kpis["KPI-008"],
+    }
+    scenario_result = simulate(baseline, technicians, demand, parts, scheduling, travel, cost)
     comparison = pd.DataFrame(
         {
-            "metric": list(scenario),
+            "metric": list(scenario_result),
             "Baseline": [
                 baseline["sla"],
                 baseline["backlog"],
@@ -568,7 +656,7 @@ elif page == "What-If Simulation":
                 baseline["resolution"],
                 baseline["cost"],
             ],
-            "Scenario": list(scenario.values()),
+            "Scenario": list(scenario_result.values()),
         }
     )
     st.dataframe(comparison, use_container_width=True)
