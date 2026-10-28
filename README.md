@@ -18,6 +18,10 @@ Implemented locally: three data-volume profiles, 43-table metadata, calculated K
 ## 6. Application screenshots and demonstration
 The live public Streamlit application is available at [fieldops-intelligence-mirza019.streamlit.app](https://fieldops-intelligence-mirza019.streamlit.app/). It was deployed from `main` using `streamlit_app/app.py` and verified after cloud build. Power BI screenshots remain pending Windows Desktop validation.
 
+![Executive overview dashboard](docs/screenshots/executive-overview.png)
+
+![AI Analyst decision support](docs/screenshots/ai-analyst.png)
+
 ## 7. High-level system architecture diagram
 ```mermaid
 flowchart LR
