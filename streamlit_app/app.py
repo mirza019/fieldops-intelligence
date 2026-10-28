@@ -14,7 +14,7 @@ import plotly.express as px
 import streamlit as st
 
 from analytics.kpis import KPI_CATALOG
-from streamlit_app.services.ai import mock_answer
+from streamlit_app.services.ai import answer
 from streamlit_app.services.data import available, load_kpis, load_table
 from streamlit_app.services.simulation import simulate
 
@@ -502,7 +502,7 @@ elif page == "AI Performance Analyst":
         "Which KPIs are below target and what should management investigate?",
     )
     if st.button("Analyze", type="primary"):
-        response = mock_answer(question, kpis)
+        response = answer(question, kpis)
         st.subheader("Observation")
         st.write(response["observation"])
         st.subheader("Hypothesis")
@@ -510,7 +510,9 @@ elif page == "AI Performance Analyst":
         st.subheader("Recommendation")
         st.write(response["recommendation"])
         st.dataframe(pd.DataFrame(response["evidence"]), use_container_width=True)
-        st.caption("Deterministic demo provider. Metrics come from the governed snapshot.")
+        st.caption(
+            f"Provider: {response['provider']} · Metrics come from the governed snapshot."
+        )
 
 elif page == "Data Quality & Governance":
     quality = load_table("quality_results")

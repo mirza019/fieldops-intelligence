@@ -89,7 +89,7 @@ PBIR metadata defines Executive, Operations, Cost, Lean and Data Quality pages. 
 flowchart LR
  Q[Authorized question]-->I[Intent]-->T[Allowlisted tool]-->E[Verified evidence]-->L[Mock/Gemini/Ollama]-->O[Observation/Hypothesis/Recommendation]
 ```
-Deterministic mock mode is implemented and labels hypotheses. Arbitrary SQL is not accepted; Gemini/Ollama adapters remain planned.
+Deterministic mock mode remains the safe default, and Gemini is supported as an optional live provider when `GEMINI_API_KEY` is set in the environment or local `.env`. The app never sends unrestricted database queries or unverified data to the model; it only passes allowlisted KPI evidence and requires JSON-structured output.
 
 ## 22. Process digitization and automation
 Models cover pipeline runs, alerts, audits, approvals, cases and actions. Public Streamlit is deliberately read-only. Operational mutations belong behind API roles and audit events.
@@ -167,7 +167,7 @@ Generate snapshot → start Streamlit → review/filter KPIs → inspect quality
 ## 42. Known limitations
 - PostgreSQL migration is verified; transactional ingestion/pipeline row loading remains pending.
 - Full PBIR visuals require Desktop authoring/validation.
-- Gemini/Ollama adapters, production OIDC, mutation workflows, scheduler, email and PDF export are incomplete.
+- Ollama adapter, production OIDC, mutation workflows, scheduler, email and PDF export are incomplete. Gemini is available via the keyed provider path and safe mock fallback.
 - Fabric deployment, Power BI refresh and Windows Desktop checks still require external Microsoft tenant/Windows access.
 
 ## 43. Future enhancements

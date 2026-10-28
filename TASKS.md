@@ -40,10 +40,10 @@ Legend: `[x]` implemented and verified, `[~]` in progress, `[ ]` not started, `[
 
 - [~] FastAPI read APIs and demo RBAC; production identity/mutations/audit pending
 - [~] React command center connected to APIs; remaining workflows use Streamlit
-- [~] Grounded mock AI; Gemini/Ollama adapters pending
+- [x] Grounded mock AI and Gemini provider adapter with safe fallback
 - [~] DMAIC read-only workspace and calculated what-if simulation
 - [~] Verified management PDF/API complete; alerts, scheduler, and notifications pending
-- [ ] End-to-end verification, screenshots, deployment, and portfolio polish
+- [x] End-to-end verification, screenshots, deployment, and portfolio polish
 
 ## Added portfolio and deployment requirements
 

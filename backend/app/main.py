@@ -6,7 +6,7 @@ from fastapi import Depends, FastAPI, Header, HTTPException, Response
 
 from analytics.kpis import KPI_CATALOG
 from analytics.reporting import build_management_report
-from streamlit_app.services.ai import mock_answer
+from streamlit_app.services.ai import answer
 from streamlit_app.services.data import load_kpis, load_table
 from streamlit_app.services.simulation import simulate
 
@@ -61,7 +61,7 @@ def quality(_: Annotated[str, Depends(require("read"))]) -> list[dict]:
 
 @app.post("/api/ai/analyze")
 def analyze(question: str, _: Annotated[str, Depends(require("analyze"))]) -> dict:
-    return mock_answer(question, load_kpis())
+    return answer(question, load_kpis())
 
 
 @app.post("/api/simulations")
