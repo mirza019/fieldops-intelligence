@@ -13,9 +13,9 @@ import pandas as pd
 import plotly.express as px
 import streamlit as st
 
-from analytics.kpis import KPI_CATALOG
+from analytics.kpis import KPI_CATALOG, calculate_kpis
 from streamlit_app.services.ai import answer
-from streamlit_app.services.data import available, load_kpis, load_table
+from streamlit_app.services.data import available, load_table
 from streamlit_app.services.simulation import simulate
 
 st.set_page_config(page_title="Field Service Performance Intelligence", page_icon="⚙️", layout="wide")
@@ -99,6 +99,33 @@ st.markdown(
         font-weight: 800;
         letter-spacing: -0.04em;
         color: #3d1d2d;
+    }
+    .filter-panel {
+        background: linear-gradient(180deg, #f3f7fb 0%, #eef3f9 100%);
+        border: 1px solid #dfe8f1;
+        border-radius: 1rem;
+        padding: 0.9rem 1rem 0.5rem;
+        box-shadow: inset 0 1px 0 rgba(255,255,255,0.7);
+        margin-bottom: 1rem;
+    }
+    .filter-panel-header {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        margin-bottom: 0.55rem;
+        color: #1d3557;
+        font-size: 0.78rem;
+        font-weight: 800;
+        letter-spacing: 0.08em;
+        text-transform: uppercase;
+    }
+    .filter-panel .stMultiSelect {
+        background: #ffffff;
+        border: 1px solid #d3e0ec;
+        border-radius: 0.8rem;
+    }
+    .filter-panel .stMultiSelect > div {
+        background: transparent;
     }
     .header-right {
         display: flex;
@@ -225,6 +252,47 @@ PAGES = [
 ]
 
 
+def _render_filter_panel(region_options: list[str], service_options: list[str]) -> None:
+    if "selected_regions" not in st.session_state:
+        st.session_state.selected_regions = region_options
+    if "selected_services" not in st.session_state:
+        st.session_state.selected_services = service_options
+
+    st.markdown(
+        """
+        <div class="filter-panel">
+            <div class="filter-panel-header">
+                <span>Filters</span>
+                <span class="muted">Power BI style</span>
+            </div>
+        </div>
+        """,
+        unsafe_allow_html=True,
+    )
+
+    filter_cols = st.columns([1, 1, 0.4])
+    with filter_cols[0]:
+        st.multiselect(
+            "Region",
+            region_options,
+            default=st.session_state.selected_regions,
+            key="selected_regions",
+            help="Filter the demo portfolio by operating region.",
+        )
+    with filter_cols[1]:
+        st.multiselect(
+            "Service type",
+            service_options,
+            default=st.session_state.selected_services,
+            key="selected_services",
+            help="Filter the platform by service line.",
+        )
+    with filter_cols[2]:
+        if st.button("Clear", key="clear_filters", use_container_width=True):
+            st.session_state.selected_regions = region_options
+            st.session_state.selected_services = service_options
+
+
 def _apply_scenario_to_kpis(base_kpis: dict[str, float | None]) -> dict[str, float | None]:
     scenario = st.session_state.get(
         "scenario",
@@ -283,27 +351,10 @@ if not available():
 orders = load_table("service_orders")
 visits = load_table("service_visits")
 costs = load_table("cost_transactions")
-base_kpis = load_kpis()
+time_entries = load_table("time_entries")
 
-st.sidebar.subheader("Global filters")
 region_options = sorted(orders["region_code"].dropna().unique())
 service_options = sorted(orders["service_type"].dropna().unique())
-if "selected_regions" not in st.session_state:
-    st.session_state.selected_regions = region_options
-if "selected_services" not in st.session_state:
-    st.session_state.selected_services = service_options
-selected_regions = st.sidebar.multiselect(
-    "Region",
-    region_options,
-    default=st.session_state.selected_regions,
-    key="selected_regions",
-)
-selected_services = st.sidebar.multiselect(
-    "Service type",
-    service_options,
-    default=st.session_state.selected_services,
-    key="selected_services",
-)
 
 if "scenario" not in st.session_state:
     st.session_state.scenario = {
@@ -315,12 +366,27 @@ if "scenario" not in st.session_state:
         "cost_pct": 0,
     }
 
+_render_filter_panel(region_options, service_options)
+selected_regions = st.session_state.get("selected_regions", region_options)
+selected_services = st.session_state.get("selected_services", service_options)
+
 filtered_orders = orders[
     orders["region_code"].isin(selected_regions) & orders["service_type"].isin(selected_services)
 ].copy()
 filtered_visits = visits[visits["service_order_id"].isin(filtered_orders["service_order_id"])]
 filtered_costs = costs[costs["service_order_id"].isin(filtered_orders["service_order_id"])]
-active_kpis = _apply_scenario_to_kpis(base_kpis)
+filtered_time_entries = time_entries[
+    time_entries["service_order_id"].isin(filtered_orders["service_order_id"])
+]
+filtered_kpis = calculate_kpis(
+    {
+        "service_orders": filtered_orders,
+        "service_visits": filtered_visits,
+        "time_entries": filtered_time_entries,
+        "cost_transactions": filtered_costs,
+    }
+)
+active_kpis = _apply_scenario_to_kpis(filtered_kpis)
 orders = filtered_orders
 visits = filtered_visits
 costs = filtered_costs
@@ -523,15 +589,9 @@ if page == "Executive Performance":
     st.caption("Synthetic portfolio data · read-only dashboard.")
 
 elif page == "Operational Analytics":
-    region = st.multiselect(
-        "Region", sorted(orders.region_code.unique()), default=sorted(orders.region_code.unique())
-    )
-    service = st.multiselect(
-        "Service type",
-        sorted(orders.service_type.unique()),
-        default=sorted(orders.service_type.unique()),
-    )
-    filtered = orders[orders.region_code.isin(region) & orders.service_type.isin(service)].copy()
+    filtered = orders[
+        orders["region_code"].isin(selected_regions) & orders["service_type"].isin(selected_services)
+    ].copy()
     filtered["month"] = filtered.created_at.dt.to_period("M").astype(str)
     volume = filtered.groupby(["month", "region_code"]).size().reset_index(name="orders")
     st.plotly_chart(
@@ -639,11 +699,11 @@ elif page == "What-If Simulation":
         "cost_pct": cost,
     }
     baseline = {
-        "sla": base_kpis["KPI-001"],
-        "backlog": base_kpis["KPI-005"],
-        "utilization": base_kpis["KPI-003"],
-        "resolution": base_kpis["KPI-004"],
-        "cost": base_kpis["KPI-008"],
+        "sla": filtered_kpis["KPI-001"],
+        "backlog": filtered_kpis["KPI-005"],
+        "utilization": filtered_kpis["KPI-003"],
+        "resolution": filtered_kpis["KPI-004"],
+        "cost": filtered_kpis["KPI-008"],
     }
     scenario_result = simulate(baseline, technicians, demand, parts, scheduling, travel, cost)
     comparison = pd.DataFrame(

@@ -1,4 +1,6 @@
+from analytics.kpis import calculate_kpis
 from streamlit_app.services.ai import answer, mock_answer
+from streamlit_app.services.data import load_table
 from streamlit_app.services.simulation import simulate
 
 
@@ -33,6 +35,40 @@ def test_answer_falls_back_to_mock_without_key(monkeypatch) -> None:
     monkeypatch.delenv("GEMINI_MODEL", raising=False)
     result = answer("why", {"KPI-001": 0.8})
     assert result["provider"] == "deterministic mock"
+
+
+def test_filtered_kpis_change_with_region_selection() -> None:
+    orders = load_table("service_orders")
+    visits = load_table("service_visits")
+    costs = load_table("cost_transactions")
+    time_entries = load_table("time_entries")
+
+    selected = orders[orders["region_code"].eq("NORDICS")].copy()
+    selected_visits = visits[visits["service_order_id"].isin(selected["service_order_id"])]
+    selected_costs = costs[costs["service_order_id"].isin(selected["service_order_id"])]
+    selected_time = time_entries[
+        time_entries["service_order_id"].isin(selected["service_order_id"])
+    ]
+
+    filtered_kpis = calculate_kpis(
+        {
+            "service_orders": selected,
+            "service_visits": selected_visits,
+            "time_entries": selected_time,
+            "cost_transactions": selected_costs,
+        }
+    )
+    all_kpis = calculate_kpis(
+        {
+            "service_orders": orders,
+            "service_visits": visits,
+            "time_entries": time_entries,
+            "cost_transactions": costs,
+        }
+    )
+
+    assert filtered_kpis != all_kpis
+    assert filtered_kpis["KPI-005"] <= all_kpis["KPI-005"]
 
 
 def test_simulation_is_deterministic_and_capacity_reduces_backlog() -> None:
