@@ -1,1 +1,64 @@
-{"$schema":"https://developer.microsoft.com/json-schemas/fabric/item/report/definition/report/2.1.0/schema.json","themeCollection":{"baseTheme":{"name":"CY24SU10","reportVersionAtImport":"5.59","type":2}},"layoutOptimization":0}
+{
+  "$schema": "https://developer.microsoft.com/json-schemas/fabric/item/report/definition/report/2.1.0/schema.json",
+  "themeCollection": {
+    "baseTheme": {
+      "name": "CY24SU10",
+      "reportVersionAtImport": "5.59",
+      "type": 2
+    },
+    "customTheme": {
+      "name": "FieldOps Executive Theme",
+      "version": "1.0",
+      "type": 3,
+      "dataColors": [
+        "#0E2A47",
+        "#2F6FED",
+        "#2BB673",
+        "#F59E0B",
+        "#8B5CF6",
+        "#E76F51",
+        "#0EA5E9",
+        "#94A3B8"
+      ],
+      "background": "#F5F7FB",
+      "foreground": "#1E2A38",
+      "tableAccent": "#0E2A47",
+      "visualStyles": {
+        "*": {
+          "*": {
+            "title": [
+              {
+                "show": true,
+                "fontSize": 12,
+                "fontColor": {"solid": {"color": "#1E2A38"}},
+                "alignment": "left",
+                "bold": true
+              }
+            ],
+            "background": [
+              {
+                "show": true,
+                "color": {"solid": {"color": "#FFFFFF"}},
+                "transparency": 0
+              }
+            ],
+            "border": [
+              {
+                "show": true,
+                "color": {"solid": {"color": "#DCE3EC"}},
+                "radius": 12
+              }
+            ],
+            "labels": [
+              {
+                "color": {"solid": {"color": "#475569"}}
+              }
+            ]
+          }
+        }
+      }
+    }
+  },
+  "layoutOptimization": 0
+}
+
